@@ -5,6 +5,8 @@
 
 extern vector<vector<demand> > pre;
 extern bool PRE;
+
+
 class evoluDiv{
 	private:
 		static const int MUT = 5;
@@ -47,8 +49,11 @@ class evoluDiv{
 		void calAbility(){  
 			ability = 0;
 			delay = 0;
-			for(int i = 0; i < G->m; i++)
+			for(int i = 0; i < G->m; i++){
 				G->Link[i]->dist = x[i];
+				//cout << x[i]<<"  ";
+			}
+			//cout<<endl;
 
 			if(PRE){
 				for(int cse = 0; cse < pre.size(); cse++){
@@ -60,9 +65,11 @@ class evoluDiv{
 					}
 
 					double util = 0;
-					for(int i = 0; i < G->m; i++)
+					for(int i = 0; i < G->m; i++){
 						util = max(util, (double)G->Link[i]->use);
-					ability += util;
+						delay += linearCal( G->Link[i]->use,G->Link[i]->capacity);
+					}
+					ability += (util+delay);
 					if(can + SMALL >= INF)
 						ability = INF;
 				}
@@ -80,7 +87,7 @@ class evoluDiv{
 					util = max(util, (double)G->Link[i]->use);
 					delay += linearCal( G->Link[i]->use,G->Link[i]->capacity);
 				}
-				ability += util;
+				ability = util + delay;
 				if(can + SMALL >= INF)
 					ability = INF;
 				}
@@ -118,17 +125,15 @@ bool evoluCmp(evoluDiv a, evoluDiv b){
 
 class evoluPopu{
 	private:
-		static const int YEAR = 200;
+		static const int YEAR = 100;
 		static const int YEARCUL = 50;
 		vector<evoluDiv> popu;
 		CGraph *G;
 		CGraph *GOR;
 		vector<demand> *dem;
 		double pm;
-		//FILE *herofile;
 	public:
 		evoluDiv hero;
-		// n 个体数，m：每个个体对应的解
 		evoluPopu(int n, int m, CGraph *g, CGraph *gor,vector<demand> *d ){
 			pm = 0.25;
 			popu.clear();
@@ -140,19 +145,14 @@ class evoluPopu{
 				popu.push_back(divi);
 			}
 			hero = evoluDiv(m, G, GOR,dem);
-			//herofile = fopen("outputFile//hero.txt","w");
 		}
 		evoluDiv evolution(){
-			//fprintf(herofile,"Start:\n ");
-			/*for(int i = 0; i < hero.x.size(); i++)
-				hero.x[i] = G->Link[i]->dist;*/
+			for(int i = 0; i < hero.x.size(); i++)
+				hero.x[i] = G->Link[i]->dist;
 			
 			hero.calAbility();
-			//fprintf(herofile, "%f\n", hero.ability);
-			//cout<< hero.ability<<endl;
 			for(int i = 0; i < popu.size(); i++){
 				popu[i].calAbility();
-				//cout << popu[i].ability<<endl;
 			}
 			
 			sort(popu.begin(), popu.end(), evoluCmp);
@@ -186,12 +186,10 @@ class evoluPopu{
 				}
 				if(getMore){
 					;
-					//fprintf(herofile, "Year %d: find hero \n", curYear);
-					//fprintf(herofile,"%f\n", hero.ability);
+					//printf("Year %d: find hero \n", curYear);
+					//printf("%f\n", hero.ability);
 				}
 			}
-			//fprintf(herofile,"end\n\n\n\n");
-			//fclose(herofile);
 			return hero;
 		}
 };

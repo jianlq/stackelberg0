@@ -275,7 +275,7 @@ double evoluDivbit::GAability(){
 	Caldelay();
 	double del = 0;
 	for (unsigned int d = 0; d < demor->size(); d++){		
-			del += GOR->dijkstra((*demor)[d].org, (*demor)[d].des, (*demor)[d].flow);
+			del += GOR->dijkstraWeight((*demor)[d].org, (*demor)[d].des, (*demor)[d].flow);
 	}
 
 	//新的流量矩阵计算TE的目标

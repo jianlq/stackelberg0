@@ -69,4 +69,38 @@ inline double ILPsolve(CGraph *G, vector<demand> &eq, double &maxLinkUtil, doubl
     return obj;
 }
 
+
+//load balance
+void heuristicLB(CGraph *G,vector<demand>&req,int ornum,double &mlu,double &delay){
+	G->clearOcc();
+	double util = 0;
+	int block = 0,success = 0;
+	for(unsigned int i = 0; i < req.size(); i++){
+		double ret = G->dijkstra(i,req[i].org, req[i].des, req[i].flow,1,0,1); 
+		if(ret >= INF)
+			block++;
+		else{
+			success++;
+			util = max(mlu,ret);
+		}
+	}
+	mlu = INF,delay = INF;
+	if(success == req.size()){	
+		mlu = util;
+
+		//mlu
+		mlu = 0;
+		for(int i=0;i<G->m;i++){  
+			mlu = max(mlu,G->Link[i]->use);
+		}
+
+		//delay
+		delay = 0;
+		for(int i=0;i<G->m;i++) 
+			delay +=  linearCal(G->Link[i]->use,G->Link[i]->capacity);	
+		
+	}
+
+}
+
 #endif

@@ -23,8 +23,7 @@
 using namespace std;
 
 
-#define MAXDEMAND 4
-#define BGNUM 6
+#define MAXDEMAND 5
 #define INF 100000000
 #define MAXWEIGHT 10
 #define MIN 0.01

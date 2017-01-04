@@ -394,17 +394,13 @@ double CGraph::dijkstraWeight(int s, int t, double dm ){
 void genGraph(int n, int m, char route[]){ 
 	FILE *out = fopen(route, "w");
 	fprintf(out,"%d %d\n",n,m);
-	for(int i = 1; i < min(n, m+1); i++){
-		int t = rand()%i, w = rand()%MAXWEIGHT+1;
+	for(int i = 0; i < m; i++){
+		int s = rand()%n, t;
 		int c = MINCAPACITY + rand()%(MAXCAPACITY - MINCAPACITY)+1;
-		fprintf(out, "%d %d %d %d\n", i, t, w,c);
-	}
-	for(int i = 0; i < m-n+1; i++){
-		int s = rand()%n, t = rand()%n, w = rand()%MAXWEIGHT+1;
-		int c = MINCAPACITY + rand()%(MAXCAPACITY - MINCAPACITY)+1;
-		while(t == s)
+		do{
 			t = rand()%n;
-		fprintf(out, "%d %d %d %d\n", t, s, w, c);
+		}while(s == t);
+		fprintf(out, "%d %d %d %d\n", s, t, 1, c);
 	}
 	fclose(out);
 }
